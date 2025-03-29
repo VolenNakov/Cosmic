@@ -24,15 +24,11 @@ cp .env.example .env
 # Edit .env with your settings
 ```
 
-4. Set up database:
+4. Run the server:
 ```bash
-createdb deepspace_compress
-alembic upgrade head
-```
-
-5. Run the server:
-```bash
-uvicorn app.main:app --reload
+# Make sure you're in the backend directory
+cd backend
+python -m uvicorn main:app --reload
 ```
 
 ## API Endpoints
@@ -50,9 +46,6 @@ pytest
 # Format code
 black .
 isort .
-
-# Create migration
-alembic revision --autogenerate -m "description"
 ```
 
 ## Requirements
