@@ -9,6 +9,7 @@ interface GalleryItem {
   compression: number;
   imageUrl: string;
   uncertaintyMap?: string;
+  compressedImageUrl?: string;
 }
 
 function App() {
@@ -22,42 +23,48 @@ function App() {
       title: 'Mars Surface Analysis', 
       compression: 85, 
       imageUrl: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&q=80',
-      uncertaintyMap: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&q=80'
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&q=80',
+      compressedImageUrl: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&q=80'
     },
     { 
       id: 2, 
       title: 'Europa Ice Formations', 
       compression: 82, 
       imageUrl: 'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?auto=format&fit=crop&q=80',
-      uncertaintyMap: 'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?auto=format&fit=crop&q=80'
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?auto=format&fit=crop&q=80',
+      compressedImageUrl: 'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?auto=format&fit=crop&q=80'
     },
     { 
       id: 3, 
       title: 'Titan Atmosphere Data', 
       compression: 88, 
       imageUrl: 'https://images.unsplash.com/photo-1614314107768-6018061b5b72?auto=format&fit=crop&q=80',
-      uncertaintyMap: 'https://images.unsplash.com/photo-1614314107768-6018061b5b72?auto=format&fit=crop&q=80'
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614314107768-6018061b5b72?auto=format&fit=crop&q=80',
+      compressedImageUrl: 'https://images.unsplash.com/photo-1614314107768-6018061b5b72?auto=format&fit=crop&q=80'
     },
     { 
       id: 4, 
       title: 'Enceladus Geysers', 
       compression: 91, 
       imageUrl: 'https://images.unsplash.com/photo-1614642264762-d0a3b8bf3700?auto=format&fit=crop&q=80',
-      uncertaintyMap: 'https://images.unsplash.com/photo-1614642264762-d0a3b8bf3700?auto=format&fit=crop&q=80'
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614642264762-d0a3b8bf3700?auto=format&fit=crop&q=80',
+      compressedImageUrl: 'https://images.unsplash.com/photo-1614642264762-d0a3b8bf3700?auto=format&fit=crop&q=80'
     },
     { 
       id: 5, 
       title: 'Io Volcanic Activity', 
       compression: 87, 
       imageUrl: 'https://images.unsplash.com/photo-1614642240262-a452c2c11724?auto=format&fit=crop&q=80',
-      uncertaintyMap: 'https://images.unsplash.com/photo-1614642240262-a452c2c11724?auto=format&fit=crop&q=80'
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614642240262-a452c2c11724?auto=format&fit=crop&q=80',
+      compressedImageUrl: 'https://images.unsplash.com/photo-1614642240262-a452c2c11724?auto=format&fit=crop&q=80'
     },
     { 
       id: 6, 
       title: 'Saturn Ring Structure', 
       compression: 89, 
       imageUrl: 'https://images.unsplash.com/photo-1614642179275-669e2643c486?auto=format&fit=crop&q=80',
-      uncertaintyMap: 'https://images.unsplash.com/photo-1614642179275-669e2643c486?auto=format&fit=crop&q=80'
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614642179275-669e2643c486?auto=format&fit=crop&q=80',
+      compressedImageUrl: 'https://images.unsplash.com/photo-1614642179275-669e2643c486?auto=format&fit=crop&q=80'
     },
   ];
 
@@ -265,7 +272,7 @@ function App() {
               </button>
             </div>
             <div className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <h4 className="text-sm font-medium text-slate-400 mb-2">Original Image</h4>
                   <img
@@ -279,6 +286,14 @@ function App() {
                   <img
                     src={selectedImage.uncertaintyMap}
                     alt="Uncertainty Map"
+                    className="w-full rounded-lg"
+                  />
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-slate-400 mb-2">Compressed Image</h4>
+                  <img
+                    src={selectedImage.compressedImageUrl}
+                    alt="Compressed Image"
                     className="w-full rounded-lg"
                   />
                 </div>
