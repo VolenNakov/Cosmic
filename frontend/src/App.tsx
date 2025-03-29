@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, Settings, Image, Satellite, ArrowUpDown, BarChart3, Database, Gauge, X } from 'lucide-react';
+import { Upload, Settings, Image, Satellite, ArrowUpDown, BarChart3, Database, Gauge, X, Rotate3d } from 'lucide-react';
 
 type Tab = 'stats' | 'upload' | 'gallery' | 'settings';
 
@@ -8,6 +8,7 @@ interface GalleryItem {
   title: string;
   compression: number;
   imageUrl: string;
+  uncertaintyMap?: string;
 }
 
 function App() {
@@ -16,12 +17,48 @@ function App() {
   const [nextImage, setNextImage] = useState<GalleryItem | null>(null);
 
   const galleryItems: GalleryItem[] = [
-    { id: 1, title: 'Mars Surface Analysis', compression: 85, imageUrl: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&q=80' },
-    { id: 2, title: 'Europa Ice Formations', compression: 82, imageUrl: 'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?auto=format&fit=crop&q=80' },
-    { id: 3, title: 'Titan Atmosphere Data', compression: 88, imageUrl: 'https://images.unsplash.com/photo-1614314107768-6018061b5b72?auto=format&fit=crop&q=80' },
-    { id: 4, title: 'Enceladus Geysers', compression: 91, imageUrl: 'https://images.unsplash.com/photo-1614642264762-d0a3b8bf3700?auto=format&fit=crop&q=80' },
-    { id: 5, title: 'Io Volcanic Activity', compression: 87, imageUrl: 'https://images.unsplash.com/photo-1614642240262-a452c2c11724?auto=format&fit=crop&q=80' },
-    { id: 6, title: 'Saturn Ring Structure', compression: 89, imageUrl: 'https://images.unsplash.com/photo-1614642179275-669e2643c486?auto=format&fit=crop&q=80' },
+    { 
+      id: 1, 
+      title: 'Mars Surface Analysis', 
+      compression: 85, 
+      imageUrl: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&q=80',
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&q=80'
+    },
+    { 
+      id: 2, 
+      title: 'Europa Ice Formations', 
+      compression: 82, 
+      imageUrl: 'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?auto=format&fit=crop&q=80',
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614732414444-096e5f1122d5?auto=format&fit=crop&q=80'
+    },
+    { 
+      id: 3, 
+      title: 'Titan Atmosphere Data', 
+      compression: 88, 
+      imageUrl: 'https://images.unsplash.com/photo-1614314107768-6018061b5b72?auto=format&fit=crop&q=80',
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614314107768-6018061b5b72?auto=format&fit=crop&q=80'
+    },
+    { 
+      id: 4, 
+      title: 'Enceladus Geysers', 
+      compression: 91, 
+      imageUrl: 'https://images.unsplash.com/photo-1614642264762-d0a3b8bf3700?auto=format&fit=crop&q=80',
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614642264762-d0a3b8bf3700?auto=format&fit=crop&q=80'
+    },
+    { 
+      id: 5, 
+      title: 'Io Volcanic Activity', 
+      compression: 87, 
+      imageUrl: 'https://images.unsplash.com/photo-1614642240262-a452c2c11724?auto=format&fit=crop&q=80',
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614642240262-a452c2c11724?auto=format&fit=crop&q=80'
+    },
+    { 
+      id: 6, 
+      title: 'Saturn Ring Structure', 
+      compression: 89, 
+      imageUrl: 'https://images.unsplash.com/photo-1614642179275-669e2643c486?auto=format&fit=crop&q=80',
+      uncertaintyMap: 'https://images.unsplash.com/photo-1614642179275-669e2643c486?auto=format&fit=crop&q=80'
+    },
   ];
 
   const tabs = [
@@ -171,73 +208,29 @@ function App() {
           )}
 
           {activeTab === 'gallery' && (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {galleryItems.map((item) => (
-                  <div 
-                    key={item.id} 
-                    className="bg-slate-800 rounded-lg p-4 hover:bg-slate-700 transition-colors cursor-pointer"
-                    onClick={() => handleImageClick(item)}
-                  >
-                    <div className="aspect-video bg-slate-900 rounded-md mb-4 overflow-hidden">
-                      <img 
-                        src={item.imageUrl} 
-                        alt={item.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <h3 className="font-medium mb-1">{item.title}</h3>
-                    <p className="text-sm text-slate-400">Compression Ratio: {item.compression}%</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Image Detail View */}
-              {selectedImage && (
-                <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-                  <button 
-                    className="absolute top-4 right-4 text-white/60 hover:text-white"
-                    onClick={() => setSelectedImage(null)}
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                  
-                  <div className="flex items-center w-full">
-                    {/* Main Image */}
-                    <div className="flex-1 p-8">
-                      <div className="max-w-4xl mx-auto">
-                        <img 
-                          src={selectedImage.imageUrl} 
-                          alt={selectedImage.title}
-                          className="w-full h-auto rounded-lg shadow-2xl"
-                        />
-                        <div className="mt-4">
-                          <h3 className="text-xl font-semibold">{selectedImage.title}</h3>
-                          <p className="text-slate-400">Compression Ratio: {selectedImage.compression}%</p>
-                        </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {galleryItems.map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => handleImageClick(item)}
+                  className="group cursor-pointer"
+                >
+                  <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-800">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 className="text-lg font-semibold">{item.title}</h3>
+                        <p className="text-sm text-slate-300">Compression: {item.compression}%</p>
                       </div>
                     </div>
-
-                    {/* Next Image Preview */}
-                    {nextImage && (
-                      <div 
-                        className="w-1/4 p-4 cursor-pointer transform hover:translate-x-2 transition-transform"
-                        onClick={handleNextImage}
-                      >
-                        <div className="bg-slate-800/50 rounded-lg p-4">
-                          <img 
-                            src={nextImage.imageUrl} 
-                            alt={nextImage.title}
-                            className="w-full h-auto rounded-lg opacity-60 hover:opacity-100 transition-opacity"
-                          />
-                          <p className="text-sm text-slate-400 mt-2">Next: {nextImage.title}</p>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
-              )}
-            </>
+              ))}
+            </div>
           )}
 
           {activeTab === 'settings' && (
@@ -257,6 +250,55 @@ function App() {
           )}
         </main>
       </div>
+
+      {/* Image Preview Modal */}
+      {selectedImage && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="bg-slate-800 rounded-lg max-w-6xl w-full mx-4 overflow-hidden">
+            <div className="flex justify-between items-center p-4 border-b border-slate-700">
+              <h3 className="text-lg font-semibold">{selectedImage.title}</h3>
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="text-slate-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-sm font-medium text-slate-400 mb-2">Original Image</h4>
+                  <img
+                    src={selectedImage.imageUrl}
+                    alt={selectedImage.title}
+                    className="w-full rounded-lg"
+                  />
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-slate-400 mb-2">Uncertainty Map</h4>
+                  <img
+                    src={selectedImage.uncertaintyMap}
+                    alt="Uncertainty Map"
+                    className="w-full rounded-lg"
+                  />
+                </div>
+              </div>
+              <div className="mt-4 flex justify-between items-center">
+                <div className="text-sm text-slate-400">
+                  Compression: {selectedImage.compression}%
+                </div>
+                <button
+                  onClick={handleNextImage}
+                  className="flex items-center space-x-2 text-blue-400 hover:text-blue-300"
+                >
+                  <span>Next Image</span>
+                  <ArrowUpDown className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
