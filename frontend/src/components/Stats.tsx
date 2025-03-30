@@ -1,91 +1,72 @@
 import React from 'react';
-import { Database, Gauge, ArrowUpDown } from 'lucide-react';
-
-interface StatCardProps {
-  icon: React.ReactNode;
-  title: string;
-  value: string;
-  subtitle: string;
-  iconColor: string;
-}
-
-const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, iconColor }) => (
-  <div className="bg-slate-800 rounded-lg p-6">
-    <div className="flex items-center space-x-3 mb-4">
-      <div className={iconColor}>{icon}</div>
-      <h3 className="text-lg font-medium">{title}</h3>
-    </div>
-    <p className="text-3xl font-bold">{value}</p>
-    <p className="text-sm text-slate-400 mt-2">{subtitle}</p>
-  </div>
-);
-
-interface PerformanceBarProps {
-  label: string;
-  value: number;
-  color: string;
-}
-
-const PerformanceBar: React.FC<PerformanceBarProps> = ({ label, value, color }) => (
-  <div className="space-y-2">
-    <div className="flex justify-between text-sm">
-      <span>{label}</span>
-      <span className="text-slate-400">{value}% compressed</span>
-    </div>
-    <div className="h-2 bg-slate-700 rounded-full">
-      <div 
-        className={`h-full rounded-full ${color}`}
-        style={{ width: `${value}%` }}
-      />
-    </div>
-  </div>
-);
+import { BarChart3, Image, Upload, Settings } from 'lucide-react';
 
 export const Stats: React.FC = () => {
-  const performanceData = [
-    { label: 'Image Data', value: 92, color: 'bg-blue-400' },
-    { label: 'Spectral Analysis', value: 78, color: 'bg-purple-400' },
-    { label: 'Telemetry Data', value: 88, color: 'bg-emerald-400' },
-  ];
-
   return (
     <div className="space-y-6">
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatCard
-          icon={<Database className="w-6 h-6" />}
-          title="Total Data Processed"
-          value="2.7 TB"
-          subtitle="+124 GB this week"
-          iconColor="text-blue-400"
-        />
-        <StatCard
-          icon={<Gauge className="w-6 h-6" />}
-          title="Avg. Compression Ratio"
-          value="85.2%"
-          subtitle="+2.1% from last month"
-          iconColor="text-emerald-400"
-        />
-        <StatCard
-          icon={<ArrowUpDown className="w-6 h-6" />}
-          title="Bandwidth Saved"
-          value="1.9 TB"
-          subtitle="Last 30 days"
-          iconColor="text-purple-400"
-        />
+      <h2 className="text-2xl font-semibold mb-6">Statistics</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-blue-50 rounded-full">
+              <Image className="h-6 w-6 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Total Images</p>
+              <p className="text-2xl font-semibold">1,234</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-green-50 rounded-full">
+              <Upload className="h-6 w-6 text-green-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Uploaded Today</p>
+              <p className="text-2xl font-semibold">45</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-purple-50 rounded-full">
+              <Settings className="h-6 w-6 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Avg. Compression</p>
+              <p className="text-2xl font-semibold">75%</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-orange-50 rounded-full">
+              <BarChart3 className="h-6 w-6 text-orange-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Processing Time</p>
+              <p className="text-2xl font-semibold">2.3s</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Compression Performance */}
-      <div className="bg-slate-800 rounded-lg p-6">
-        <h3 className="text-lg font-medium mb-6">Compression Performance</h3>
-        <div className="space-y-4">
-          {performanceData.map((item) => (
-            <PerformanceBar
-              key={item.label}
-              label={item.label}
-              value={item.value}
-              color={item.color}
-            />
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h3 className="text-lg font-semibold mb-4">Compression Distribution</h3>
+        <div className="h-64 flex items-end justify-between space-x-2">
+          {[30, 45, 60, 75, 90].map((value) => (
+            <div key={value} className="flex-1">
+              <div
+                className="bg-blue-500 rounded-t"
+                style={{ height: `${value}%` }}
+              />
+              <p className="text-center text-sm text-gray-600 mt-2">{value}%</p>
+            </div>
           ))}
         </div>
       </div>

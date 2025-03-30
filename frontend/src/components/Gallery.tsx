@@ -1,46 +1,50 @@
 import React from 'react';
-import { GalleryItem } from '../types';
+import { useQuery } from '@tanstack/react-query';
+import { galleryService } from '../services/galleryService';
+import { GalleryProps } from '../types';
 
-interface GalleryProps {
-  items: GalleryItem[];
-  onImageClick: (item: GalleryItem) => void;
-}
+export const Gallery: React.FC<GalleryProps> = ({ onImageClick }) => {
+  const { data: items, isLoading, error } = useQuery({
+    queryKey: ['galleryItems'],
+    queryFn: galleryService.getGalleryItems,
+  });
 
-interface GalleryItemCardProps {
-  item: GalleryItem;
-  onClick: () => void;
-}
-
-const GalleryItemCard: React.FC<GalleryItemCardProps> = ({ item, onClick }) => (
-  <div
-    onClick={onClick}
-    className="group cursor-pointer"
-  >
-    <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-800">
-      <img
-        src={item.imageUrl}
-        alt={item.title}
-        className="w-full h-full object-cover transition-transform group-hover:scale-105"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="text-lg font-semibold">{item.title}</h3>
-          <p className="text-sm text-slate-300">Compression: {item.compression}%</p>
-        </div>
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
       </div>
-    </div>
-  </div>
-);
+    );
+  }
 
-export const Gallery: React.FC<GalleryProps> = ({ items, onImageClick }) => {
+  if (error) {
+    return (
+      <div className="text-red-500 text-center">
+        <p>Error loading gallery items. Please try again later.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {items.map((item) => (
-        <GalleryItemCard
+      {items?.map((item) => (
+        <div
           key={item.id}
-          item={item}
-          onClick={() => onImageClick(item)}
-        />
+          className="bg-white rounded-lg shadow overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => onImageClick(item.id)}
+        >
+          <div className="aspect-w-16 aspect-h-9">
+            <img
+              src={item.imageUrl}
+              alt={item.title}
+              className="object-cover w-full h-full"
+            />
+          </div>
+          <div className="p-4">
+            <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+            <p className="text-gray-600">Compression: {item.compression}%</p>
+          </div>
+        </div>
       ))}
     </div>
   );
