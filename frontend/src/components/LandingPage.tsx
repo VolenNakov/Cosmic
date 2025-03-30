@@ -1,9 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+
+interface GalleryImage {
+  id: number;
+  src: string;
+}
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const galleryImages: GalleryImage[] = [
+    { id: 1, src: '/1.jpg' },
+    { id: 2, src: '/2.jpg' },
+    { id: 3, src: '/3.jpg' },
+    { id: 4, src: '/4.jpg' },
+    { id: 5, src: '/5.jpg' },
+    { id: 6, src: '/6.jpg' },
+    { id: 7, src: '/7.jpg' },
+    { id: 8, src: '/8.jpg' }
+  ];
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+  };
+
+  const previousImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -23,29 +48,16 @@ const LandingPage: React.FC = () => {
             Advanced image compression and optimization for space mission imagery
           </p>
           
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-          >
-            Launch Dashboard
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </button>
-        </div>
+          <div className="flex justify-center mb-16">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="group flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              Launch Dashboard
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
 
-        {/* Features */}
-        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-6 bg-gray-800/50 rounded-lg backdrop-blur-sm border border-gray-700">
-            <h3 className="text-xl font-semibold mb-4 text-blue-400">Advanced Compression</h3>
-            <p className="text-gray-400">State-of-the-art image compression algorithms optimized for space imagery</p>
-          </div>
-          <div className="p-6 bg-gray-800/50 rounded-lg backdrop-blur-sm border border-gray-700">
-            <h3 className="text-xl font-semibold mb-4 text-purple-400">Real-time Processing</h3>
-            <p className="text-gray-400">Process and optimize images in real-time with minimal quality loss</p>
-          </div>
-          <div className="p-6 bg-gray-800/50 rounded-lg backdrop-blur-sm border border-gray-700">
-            <h3 className="text-xl font-semibold mb-4 text-indigo-400">Space-Optimized</h3>
-            <p className="text-gray-400">Specially designed for handling space mission imagery and data</p>
-          </div>
         </div>
       </div>
     </div>
