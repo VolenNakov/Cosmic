@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type Tab = 'stats' | 'upload' | 'gallery' | 'settings';
+export type Tab = 'stats' | 'upload' | 'gallery';
 
 export interface GalleryItem {
   id: string;
@@ -28,10 +28,4 @@ export interface GalleryProps {
 
 export interface UploadProps {
   onUploadComplete?: () => void;
-}
-
-export interface SidebarProps {
-  activeTab: Tab;
-  onTabChange: (tab: Tab) => void;
-  tabs: TabItem[];
 } 

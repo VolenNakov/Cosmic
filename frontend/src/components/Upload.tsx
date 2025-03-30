@@ -2,11 +2,9 @@ import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Upload as UploadIcon } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { galleryService } from '../services/galleryService';
-
-interface UploadProps {
-  onUploadComplete?: () => void;
-}
+import { UploadProps } from '../types';
 
 export const Upload: React.FC<UploadProps> = ({ onUploadComplete }) => {
   const queryClient = useQueryClient();
@@ -15,7 +13,11 @@ export const Upload: React.FC<UploadProps> = ({ onUploadComplete }) => {
     mutationFn: (file: File) => galleryService.uploadImage(file),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['galleryItems'] });
+      toast.success('Image uploaded successfully!');
       onUploadComplete?.();
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to upload image: ${error.message}`);
     },
   });
 
@@ -46,16 +48,6 @@ export const Upload: React.FC<UploadProps> = ({ onUploadComplete }) => {
           <div className="flex flex-col items-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div>
             <p className="text-gray-600">Uploading...</p>
-          </div>
-        ) : uploadMutation.isError ? (
-          <div className="text-red-500">
-            <p>Error uploading image. Please try again.</p>
-            <p className="text-sm mt-1">{uploadMutation.error.message}</p>
-          </div>
-        ) : uploadMutation.isSuccess ? (
-          <div className="text-green-500">
-            <p>Upload successful!</p>
-            <p className="text-sm mt-1">Your image has been processed.</p>
           </div>
         ) : (
           <div className="flex flex-col items-center">
