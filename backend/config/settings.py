@@ -5,7 +5,11 @@ class Settings:
     DATABASE_URL: str = "sqlite:///./sql_app.db"
     
     # CORS settings
-    BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: list[str] = [
+        "http://localhost:5173",  # Vite default port
+        "http://127.0.0.1:5173",  # Alternative localhost
+        "http://localhost:3000",  # Alternative port
+    ]
     
     # ML Model settings
     MODEL_PATH: str = "models/ml_model"  # Path to your ML model
