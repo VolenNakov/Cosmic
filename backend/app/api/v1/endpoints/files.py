@@ -4,7 +4,7 @@ from typing import List
 from database.session import get_db
 from app.schemas.file import FileUpload, FileUploadCreate, ProcessingResult
 from app.services.file_service import FileService
-from utils.file_utils import save_upload_file
+from app.utils.file_utils import save_upload_file
 
 router = APIRouter()
 file_service = FileService()
