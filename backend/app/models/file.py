@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, JSON
 from sqlalchemy.sql import func
-from database.base import Base
+from app.database.base import Base
 
 class FileUpload(Base):
     __tablename__ = "file_uploads"
