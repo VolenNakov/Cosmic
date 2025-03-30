@@ -8,13 +8,11 @@ export interface TabItem {
   icon: LucideIcon;
 }
 
-export interface GalleryItem {
+export interface FileItem {
   id: string;
-  title: string;
-  compression: number;
-  imageUrl: string;
-  uncertaintyMap: string;
-  compressedImageUrl: string;
+  filename: string;
+  url: string;
+  size?: string;
 }
 
 export interface ImagePreviewModalProps {

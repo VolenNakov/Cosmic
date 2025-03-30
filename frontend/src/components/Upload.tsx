@@ -1,68 +1,83 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Upload as UploadIcon } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { galleryService } from '../services/galleryService';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { UploadProps } from '../types';
 
 export const Upload: React.FC<UploadProps> = ({ onUploadComplete }) => {
   const queryClient = useQueryClient();
 
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => galleryService.uploadImage(file),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['galleryItems'] });
-      toast.success('Image uploaded successfully!');
-      onUploadComplete?.();
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await fetch('/api/v1/files/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+      return response.json();
     },
-    onError: (error: Error) => {
-      toast.error(`Failed to upload image: ${error.message}`);
+    onSuccess: () => {
+      toast.success('File uploaded successfully');
+      queryClient.invalidateQueries({ queryKey: ['gallery'] });
+      onUploadComplete();
+    },
+    onError: () => {
+      toast.error('Failed to upload file');
     },
   });
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      uploadMutation.mutate(acceptedFiles[0]);
-    }
-  }, [uploadMutation]);
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      acceptedFiles.forEach((file) => {
+        uploadMutation.mutate(file);
+      });
+    },
+    [uploadMutation]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.gif']
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif'],
     },
-    maxFiles: 1
+    maxFiles: 1,
   });
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow">
-      <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-white mb-6">Upload Image</h2>
+      
       <div
         {...getRootProps()}
         className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
-          ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}`}
+          ${
+            isDragActive
+              ? 'border-blue-500 bg-blue-500/10'
+              : 'border-gray-700 bg-gray-800 hover:border-gray-600'
+          }`}
       >
         <input {...getInputProps()} />
-        {uploadMutation.isPending ? (
-          <div className="flex flex-col items-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div>
-            <p className="text-gray-600">Uploading...</p>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center">
-            <UploadIcon className="h-12 w-12 text-gray-400 mb-4" />
-            <p className="text-gray-600">
-              {isDragActive
-                ? 'Drop the image here'
-                : 'Drag and drop an image here, or click to select'}
-            </p>
-            <p className="text-sm text-gray-500 mt-2">
-              Supported formats: PNG, JPG, JPEG, GIF
-            </p>
-          </div>
-        )}
+        <UploadIcon className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+        <p className="text-gray-400 mb-2">
+          {isDragActive
+            ? 'Drop the file here'
+            : 'Drag and drop an image here, or click to select'}
+        </p>
+        <p className="text-sm text-gray-500">
+          Supported formats: PNG, JPG, JPEG, GIF
+        </p>
       </div>
+
+      {uploadMutation.isPending && (
+        <div className="text-center text-gray-400">
+          Uploading...
+        </div>
+      )}
     </div>
   );
 }; 
