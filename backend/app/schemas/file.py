@@ -23,4 +23,9 @@ class FileUpload(FileUploadBase):
 class ProcessingResult(BaseModel):
     file_id: int
     result: Dict[str, Any]
-    status: str 
+    status: str
+
+class FileResponse(BaseModel):
+    """Schema for file response."""
+    filename: str
+    url: str 

@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from config.settings import get_settings
-from app.api.v1.endpoints import files
+from app.api.v1.api import api_router
 from database.base import engine
 from app.models.file import FileUpload
 
@@ -25,8 +26,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(files.router, prefix=f"{settings.API_V1_STR}/files", tags=["files"])
+# Mount static files
+app.mount(settings.STATIC_URL, StaticFiles(directory=settings.UPLOAD_DIR), name="static")
+
+# Include API router
+app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 def read_root():

@@ -1,45 +1,40 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, BackgroundTasks
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, UploadFile, HTTPException
 from typing import List
-from database.session import get_db
-from app.schemas.file import FileUpload, FileUploadCreate, ProcessingResult
-from app.services.file_service import FileService
-from app.utils.file_utils import save_upload_file
+from app.utils.file_utils import save_upload_file, list_uploaded_files, get_file_url, delete_file
+from app.schemas.file import FileResponse
 
 router = APIRouter()
-file_service = FileService()
 
-@router.post("/upload", response_model=FileUpload)
-async def upload_file(
-    background_tasks: BackgroundTasks,
-    file: UploadFile = File(...),
-    db: Session = Depends(get_db)
-):
-    file_path = await save_upload_file(file)
-    if not file_path:
-        raise HTTPException(status_code=400, detail="Failed to save file")
-    
-    file_data = FileUploadCreate(
-        filename=file.filename,
-        file_type=file.content_type
-    )
-    db_file = file_service.create_file(db, file_data, file_path)
-    
-    background_tasks.add_task(file_service.process_file, db, db_file.id)
-    
-    return db_file
-
-@router.get("/", response_model=List[FileUpload])
-def list_files(
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db)
-):
-    return file_service.list_files(db, skip, limit)
-
-@router.get("/{file_id}", response_model=FileUpload)
-def get_file(file_id: int, db: Session = Depends(get_db)):
-    file = file_service.get_file(db, file_id)
+@router.post("/upload", response_model=FileResponse)
+async def upload_file(file: UploadFile):
+    """Upload a file and return its URL."""
     if not file:
-        raise HTTPException(status_code=404, detail="File not found")
-    return file 
+        raise HTTPException(status_code=400, detail="No file provided")
+    
+    try:
+        filename = save_upload_file(file)
+        return FileResponse(
+            filename=filename,
+            url=get_file_url(filename)
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/list", response_model=List[FileResponse])
+async def list_files():
+    """List all uploaded files."""
+    files = list_uploaded_files()
+    return [
+        FileResponse(
+            filename=filename,
+            url=get_file_url(filename)
+        )
+        for filename in files
+    ]
+
+@router.delete("/{filename}")
+async def delete_uploaded_file(filename: str):
+    """Delete a file by its filename."""
+    if delete_file(filename):
+        return {"message": "File deleted successfully"}
+    raise HTTPException(status_code=404, detail="File not found") 

@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 class Settings:
     PROJECT_NAME: str = "NeuroPixel"
     VERSION: str = "1.0.0"
@@ -11,8 +14,17 @@ class Settings:
         "http://localhost:3000",  # Alternative port
     ]
     
+    # File upload settings
+    UPLOAD_DIR: str = "uploads"
+    STATIC_URL: str = "/static"
+    
     # ML Model settings
     MODEL_PATH: str = "models/ml_model"  # Path to your ML model
+
+    def __init__(self):
+        # Create upload directory if it doesn't exist
+        upload_dir = Path(self.UPLOAD_DIR)
+        upload_dir.mkdir(parents=True, exist_ok=True)
 
 def get_settings():
     return Settings() 
